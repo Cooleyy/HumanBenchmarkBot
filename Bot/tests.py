@@ -6,8 +6,6 @@ def get_tests():
     return tests
 
 def sequence_memory(driver: Browser):
-    driver.click('Play', tag='a')
-    driver.click('Start')
     driver.implicitly_wait(0.01)
 
     squares = driver.find_elements(tag='div', css_selector='div.square')
@@ -16,7 +14,7 @@ def sequence_memory(driver: Browser):
     squaresNotFound = True
     squareOrder = []
     failSquare = squares[0]
-    while roundNo <= 30:
+    while roundNo <= 38:
         while squaresNotFound:
             for square in squares:
                 if square.get_attribute('class') == 'square active':
@@ -43,9 +41,6 @@ def sequence_memory(driver: Browser):
     failSquare.click()
 
 def chimp_test(driver: Browser):
-    driver.click('Play', tag='a', number=2)
-    driver.click('Start')
-
     driver.implicitly_wait(0.00001)
 
     roundNo = 4
@@ -62,18 +57,12 @@ def chimp_test(driver: Browser):
         driver.click('Continue')
 
 def aim_trainer(driver: Browser):
-    driver.click('Play', tag='a', number=3)
-    driver.click('Start')
-
     driver.implicitly_wait(0)
 
     for i in range(31):
         driver.click(css_selector='div.css-17nnhwz.e6yfngs4', number=1)
 
 def typing(driver: Browser):
-    driver.click('Play', tag='a', number=4)
-    driver.click('Start')
-
     driver.implicitly_wait(0)
 
     symbols = driver.find_elements(tag='span', classname='incomplete', loose_match=False)
@@ -86,9 +75,6 @@ def typing(driver: Browser):
     input.send_keys(passage)
 
 def verbal_memory(driver: Browser):
-    driver.click('Play', tag='a', number=5)
-    driver.click('Start')
-
     driver.implicitly_wait(0)
     
     wordElementParent = driver.find_elements(tag='div', css_selector='div.css-1qvtbrk.e19owgy78', loose_match=False)[1]
@@ -96,7 +82,6 @@ def verbal_memory(driver: Browser):
     words = []
     while round <= 1000:
         word = wordElementParent.get_attribute('innerHTML')[19:-6]
-        print(word)
         if word in words:
             driver.click(text='SEEN')
         else:
@@ -113,26 +98,54 @@ def verbal_memory(driver: Browser):
 
 
 def number_memory(driver: Browser):
-    driver.click('Play', tag='a', number=6)
-    driver.click('Start')
-
     round = 1
-    while round <= 3:
+    while round <= 23:
         num = driver.find_elements(css_selector='div.big-number')[0].get_attribute('innerHTML')
-        print(num)
-        time.sleep(1.7*round)
-        # inputParentElement = driver.find_elements(css_selector='div.css-1qvtbrk.e19owgy78')[1]
-        # inputParentElement.find_element_by_xpath(".//input").send_keys(num)
+        time.sleep((1*round) + 0.7)
         driver.type(num)
         driver.click('Submit')
         driver.click('NEXT')
         round += 1
-    time.sleep(1.75*round)
+    time.sleep((1*round) + 0.7)
     driver.type(str(int(num)-1))
     driver.click('Submit')
 
 def visual_memory(driver: Browser):
-    print("TODO")
+    round = 3
+    time.sleep(.75)
+    container = driver.find_elements(css_selector='div.css-hvbk5q.eut2yre0')[0]
+    while round <= 52:
+        squares = container.find_elements_by_xpath('.//*//*')
+        activeSquares = []
+        for square in squares:
+            if 'active' in square.get_attribute('class'):
+                activeSquares.append(square)
+        time.sleep(1)
+        for square in activeSquares:
+            square.click()
+        round +=1
+        time.sleep(1.8)
+
+    #Fail out on purpose
+    for i in range(3):
+        squares = container.find_elements_by_xpath('.//*//*')
+        activeSquares = []
+        for square in squares:
+            if 'active' not in square.get_attribute('class'):
+                activeSquares.append(square)
+        time.sleep(1)
+        for square in activeSquares[:3]:
+            square.click()
+        time.sleep(1.8)
+    
 
 def reaction_time(driver: Browser):
-    print("TODO")
+    clickArea = driver.find_elements(tag='div', css_selector='div.e18o0sx0.css-saet2v.e19owgy77')[0]
+
+    round = 1
+    while round <= 5:
+        if 'view-go' in clickArea.get_attribute('class'):
+            clickArea.click()
+            round += 1
+            clickArea.click()
+            time.sleep(0.2)
